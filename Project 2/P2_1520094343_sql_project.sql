@@ -42,13 +42,24 @@ facilities in question. */
 SELECT facid, name, membercost, monthlymaintenance 
 FROM Facilities 
 WHERE membercost != 0 AND membercost < (monthlymaintenance * 0.2);
-
+/*A3:
+facid,name,membercost,monthlymaintenance
+'0','Tennis Court 1','5.0','200'
+'1','Tennis Court 2','5.0','200'
+'4','Massage Room 1','9.9','3000'
+'5','Massage Room 2','9.9','3000'
+'6','Squash Court','3.5','80' */
 
 /* Q4: How can you retrieve the details of facilities with ID 1 and 5?
 Write the query without using the OR operator. */
 SELECT * 
 FROM  Facilities 
 WHERE facid IN (1,5);
+/*A4:
+facid,name,membercost,guestcost,initialoutlay,monthlymaintenance
+'1','Tennis Court 2','5.0','25.0','8000','200'
+'5','Massage Room 2','9.9','80.0','4000','3000' */
+
 
 /* Q5: How can you produce a list of facilities, with each labelled as
 'cheap' or 'expensive', depending on if their monthly maintenance cost is
@@ -58,13 +69,26 @@ SELECT name, monthlymaintenance,
 CASE WHEN monthlymaintenance > 100 THEN 'expensive'
 								   ELSE 'cheap' END AS cost  
 FROM Facilities;
-
+/*A5:
+ name,monthlymaintenance,cost
+'Tennis Court 1','200','expensive'
+'Tennis Court 2','200','expensive'
+'Badminton Court','50','cheap'
+'Table Tennis','10','cheap'
+'Massage Room 1','3000','expensive'
+'Massage Room 2','3000','expensive'
+'Squash Court','80','cheap'
+'Snooker Table','15','cheap'
+'Pool Table','15','cheap' */
 
 /* Q6: You'd like to get the first and last name of the last member(s)
 who signed up. Do not use the LIMIT clause for your solution. */
 SELECT surname, firstname 
 FROM Members 
 WHERE joindate = (SELECT MAX(joindate) FROM Members);
+/*A6:
+surname,firstname
+'Smith','Darren' */
 
 /* Q7: How can you produce a list of all members who have used a tennis court?
 Include in your output the name of the court, and the name of the member
@@ -80,6 +104,55 @@ FROM Bookings b
 WHERE f.name LIKE  'Tennis Court%'
 GROUP BY 1, 2
 ORDER BY 2;
+/*A7:
+court_name,member_name
+'Tennis Court 1','Anne Baker'
+'Tennis Court 2','Anne Baker'
+'Tennis Court 2','Burton Tracy'
+'Tennis Court 1','Burton Tracy'
+'Tennis Court 1','Charles Owen'
+'Tennis Court 2','Charles Owen'
+'Tennis Court 2','Darren Smith'
+'Tennis Court 2','David Farrell'
+'Tennis Court 1','David Farrell'
+'Tennis Court 1','David Jones'
+'Tennis Court 2','David Jones'
+'Tennis Court 1','David Pinker'
+'Tennis Court 1','Douglas Jones'
+'Tennis Court 1','Erica Crumpet'
+'Tennis Court 1','Florence Bader'
+'Tennis Court 2','Florence Bader'
+'Tennis Court 2','Gerald Butters'
+'Tennis Court 1','Gerald Butters'
+'Tennis Court 2','GUEST GUEST'
+'Tennis Court 1','GUEST GUEST'
+'Tennis Court 2','Henrietta Rumney'
+'Tennis Court 2','Jack Smith'
+'Tennis Court 1','Jack Smith'
+'Tennis Court 2','Janice Joplette'
+'Tennis Court 1','Janice Joplette'
+'Tennis Court 1','Jemima Farrell'
+'Tennis Court 2','Jemima Farrell'
+'Tennis Court 1','Joan Coplin'
+'Tennis Court 1','John Hunt'
+'Tennis Court 2','John Hunt'
+'Tennis Court 1','Matthew Genting'
+'Tennis Court 2','Millicent Purview'
+'Tennis Court 2','Nancy Dare'
+'Tennis Court 1','Nancy Dare'
+'Tennis Court 2','Ponder Stibbons'
+'Tennis Court 1','Ponder Stibbons'
+'Tennis Court 1','Ramnaresh Sarwin'
+'Tennis Court 2','Ramnaresh Sarwin'
+'Tennis Court 1','Tim Boothe'
+'Tennis Court 2','Tim Boothe'
+'Tennis Court 2','Tim Rownam'
+'Tennis Court 1','Tim Rownam'
+'Tennis Court 2','Timothy Baker'
+'Tennis Court 1','Timothy Baker'
+'Tennis Court 1','Tracy Smith'
+'Tennis Court 2','Tracy Smith' */
+
 
 /* Q8: How can you produce a list of bookings on the day of 2012-09-14 which
 will cost the member (or guest) more than $30? Remember that guests have
@@ -101,6 +174,14 @@ SELECT f.name AS court_name, CONCAT(m.firstname, ' ', m.surname) as member_name,
     OR (b.starttime LIKE '2012-09-14%' AND m.memid != 0 AND f.membercost > 30)
  ORDER BY 3 DESC;
  
+ /*A8:
+ court_name,member_name,facility_cost
+'Massage Room 1','GUEST GUEST','80.0'
+'Massage Room 1','GUEST GUEST','80.0'
+'Massage Room 1','GUEST GUEST','80.0'
+'Massage Room 2','GUEST GUEST','80.0'  */
+
+ 
 /* Q9: This time, produce the same result as in Q8, but using a subquery. */
 SELECT subquery.facility_name,
        subquery.member_name,
@@ -119,6 +200,12 @@ SELECT subquery.facility_name,
  WHERE subquery.starttime LIKE '2012-09-14%'
    AND subquery.facility_cost > 30
  ORDER BY 3 DESC;
+/*A9:
+facility_name,member_name,facility_cost
+'Massage Room 1','GUEST GUEST','80.0'
+'Massage Room 1','GUEST GUEST','80.0'
+'Massage Room 1','GUEST GUEST','80.0'
+'Massage Room 2','GUEST GUEST','80.0' */
 
 /* Q10: Produce a list of facilities with a total revenue less than 1000.
 The output of facility name and total revenue, sorted by revenue. Remember
@@ -138,5 +225,11 @@ SELECT subquery.facility_name,
 	  GROUP BY 1 ) subquery
  WHERE subquery.total_revenue < 1000
  ORDER BY 2 DESC;
-
+ 
+/*A10:
+facility_name,total_revenue
+'Badminton Court','604.5'
+'Pool Table','265.0'
+'Snooker Table','115.0'
+'Table Tennis','90.0'  */
 
